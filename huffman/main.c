@@ -56,13 +56,13 @@ void preparar_arbol()
 }
 
 
-void tejer()
+void costruirArbol()
 {
-    int menor=-1;     /* guarda indice */
-    int segundo=-1;   /* guarda indice */
-    int temporal;     /* guarda cuenta */
+    int menor=-1;
+    int segundo=-1;
+    int temporal;
     int j;
-    struct nodo *P;   /* nuevo nodo */
+    struct nodo *P;
 
     if (nsimb==1) return;
 
@@ -99,7 +99,7 @@ void tejer()
         }
     }
 
-    /* tejer un nuevo nodo */
+    /* costruirArbol un nuevo nodo */
     P=(struct nodo *)malloc(sizeof(struct nodo));
     arbol[menor]->arr=P;
     arbol[segundo]->arr=P;
@@ -114,7 +114,7 @@ void tejer()
     --nsimb;
 
     /* sigue tejiendo hasta que sĂłlo quede un nodo */
-    tejer();
+    costruirArbol();
 }
 
 void codificar()
@@ -258,7 +258,7 @@ int descomprimir(char *origen, char *destino)
 
     /* construyo el ĂĄrbol */
     preparar_arbol();
-    tejer();
+    costruirArbol();
 
     /* apunto a la raĂ­z del ĂĄrbol */
     j=0;
@@ -319,7 +319,7 @@ main(int argc, char *argv[])
             char nombreaux[25] = "";
             fflush(stdin);
             scanf("%s" , nombre);
-            printf("------------------------------------------------------------------");
+            printf("------------------------------------------------------------------\n");
             fflush(stdin);
             FILE *fp;
             strcat(nombreaux , nombre);
@@ -340,7 +340,7 @@ main(int argc, char *argv[])
                 clock_t start = clock();
                 preparar_hojas(nombre);
                 preparar_arbol();
-                tejer();
+                costruirArbol();
                 codificar();
                 escribe_cabecera(nombreaux);
                 comprimir(nombre , nombreaux);
@@ -370,7 +370,7 @@ main(int argc, char *argv[])
             fp2 = fopen(nombreaux2 , "r");
             if(fp2 == NULL)
             {
-                printf("El archivo no existe");
+                printf("El archivo no existe\n");
                 fclose(fp2);
 
                 system("Pause");
@@ -378,16 +378,21 @@ main(int argc, char *argv[])
             else
             {
                 fclose(fp2);
+                clock_t start2 = clock();
                 descomprimir(nombreaux2 , nombre2);
+                printf("Tiempo transcurrido: %f", ((double)clock() - start2) / CLOCKS_PER_SEC);
+                printf("\n");
+
                 printf("Archivo descomprimido\n");
                 system("Pause");
             }
             break;
         case 3:
-            //codigo
+            printf("----------Saliendo---------\n");
             break;
         default:
-            printf("Ingreso una opcion incorrecta");
+            printf("Ingreso una opcion incorrecta\n");
+            system("Pause");
             break;
         }
     }while(opc != 3);

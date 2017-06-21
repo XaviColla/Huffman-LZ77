@@ -188,7 +188,7 @@ int comprimir(char *origen, char *destino)
     char *p;
 
     if ((f=fopen(origen,"rb"))==NULL) return(1);
-    if ((g=fopen(destino,"ab"))==NULL) return(2); /* ya esta la cabecera */
+    if ((g=fopen(destino,"ab"))==NULL) return(2);
     int cont = 0;
 
     while ((x=fgetc(f))!=EOF){
@@ -229,7 +229,6 @@ int descomprimir(char *origen, char *destino)
     if ((g=fopen(origen,"rb"))==NULL) return(1);
     if ((f=fopen(destino,"wb"))==NULL) return(2);
 
-    /* leer NBYTES */
     p=(char *)(&n);
     for(j=0;j<4;++j){
         *p=(unsigned char)fgetc(g);
@@ -237,10 +236,9 @@ int descomprimir(char *origen, char *destino)
     }
     NBYTES=n;
 
-    /* leer NSIMB */
+
     NSIMB=nsimb=fgetc(g);
 
-    /* preparar las hojas */
     for(j=0;j<256;++j){
         hojas[j].cuenta=0;
         hojas[j].izq=hojas[j].der=hojas[j].arr=NULL;
@@ -256,17 +254,14 @@ int descomprimir(char *origen, char *destino)
         hojas[n].cuenta=m;
     }
 
-    /* construyo el ĂĄrbol */
     preparar_arbol();
     costruirArbol();
 
-    /* apunto a la raĂ­z del ĂĄrbol */
     j=0;
     while (hojas[j].cuenta==0) ++j;
     P=(struct nodo *)(&(hojas[j]));
     while (P->arr!=NULL) P=P->arr;
 
-    /* ahora ya se puede descomprimir */
     j=0;
     x=fgetc(g);
     nbit=0;

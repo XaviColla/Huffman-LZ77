@@ -5,10 +5,12 @@
  */
 package Interfaz;
 
+import comprensionlz77.pasarBinario;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import lz77.LZ77;
 
@@ -49,6 +51,7 @@ public class InterfazArchivos extends javax.swing.JFrame {
         BotonVerArchivoC = new javax.swing.JButton();
         BotonVerArchivoO = new javax.swing.JButton();
         BotonComp1 = new javax.swing.JButton();
+        BotonComp2 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         TituloNombreArchivo = new javax.swing.JLabel();
@@ -109,7 +112,7 @@ public class InterfazArchivos extends javax.swing.JFrame {
                 BotonDesc1ActionPerformed(evt);
             }
         });
-        getContentPane().add(BotonDesc1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 240, 270, 50));
+        getContentPane().add(BotonDesc1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 240, 200, 50));
 
         BotonVerArchivoC.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         BotonVerArchivoC.setText("VER ARCHIVO COMPRIMIDO");
@@ -136,7 +139,16 @@ public class InterfazArchivos extends javax.swing.JFrame {
                 BotonComp1ActionPerformed(evt);
             }
         });
-        getContentPane().add(BotonComp1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 270, 50));
+        getContentPane().add(BotonComp1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 180, 50));
+
+        BotonComp2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        BotonComp2.setText("PASAR A BINARIO");
+        BotonComp2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BotonComp2ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(BotonComp2, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 240, 190, 50));
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel5.setText("Información del Archivo:");
@@ -237,11 +249,7 @@ public class InterfazArchivos extends javax.swing.JFrame {
             File archivo = ventanaBusqueda.getSelectedFile();
             CampoArchivo.setText(archivo.getPath());
             this.CampoArchivo.setText(archivo.getAbsolutePath());
-
-           
-                File arch = new File(this.CampoArchivo.getText());
-                this.NombreArchivo.setText(arch.getName());
-                this.ValorTxtInicial.setText("" + arch.length() + " bytes");
+            
         }
     }//GEN-LAST:event_BotonBuscarArchivoActionPerformed
 
@@ -284,10 +292,17 @@ public class InterfazArchivos extends javax.swing.JFrame {
                 nuevaCompre.comprimir(CampoArchivo.getText());
                 time_end = System.currentTimeMillis();
                 timeT = (time_end - time_start);
-                this.labeltiempocomprension.setText("Tiempo: " + String.valueOf(timeT) + " Segundos");
+                this.labeltiempocomprension.setText("Tiempo: " + String.valueOf(timeT) + " milisegundos");
+                 JOptionPane.showMessageDialog(null, "Archivo Comprimido" , "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+                
                 File arch = new File(this.CampoArchivo.getText()+ ".lz77");
                 this.ValorTxtCom.setText("" + arch.length() + " bytes");
                 BotonVerArchivoC.setEnabled(true);
+                BotonVerArchivoO.setEnabled(true);
+                
+                File arch2 = new File(this.CampoArchivo.getText());
+                this.NombreArchivo.setText(arch2.getName());
+                this.ValorTxtInicial.setText("" + arch2.length() + " bytes");
         }
         catch(Exception io){
             
@@ -298,10 +313,30 @@ public class InterfazArchivos extends javax.swing.JFrame {
     private void BotonDesc1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonDesc1ActionPerformed
         // TODO add your handling code here:
         LZ77 nuevaCompre = new LZ77();
+        long time_start = 0;
+        long time_end = 0;
+        long timeT = 0;
         try
         {
             if(CampoArchivo.getText().contains(".lz77"))
+            {
+                time_start = System.currentTimeMillis();
                 nuevaCompre.descomprimir(CampoArchivo.getText());
+                time_end = System.currentTimeMillis();
+                timeT = (time_end - time_start);
+                this.labeltiempocomprension.setText("Tiempo: " + String.valueOf(timeT) + " milisegundos");
+                String campo = this.CampoArchivo.getText();
+                File arch = new File(this.CampoArchivo.getText());
+                this.ValorTxtCom.setText("" + arch.length() + " bytes");
+                BotonVerArchivoC.setEnabled(true);
+                BotonVerArchivoO.setEnabled(true);
+                
+                File arch2 = new File(campo.substring(0 ,campo.length() - 4));
+                this.NombreArchivo.setText(arch2.getName());
+                this.ValorTxtInicial.setText("" + arch2.length() + " bytes");
+                JOptionPane.showMessageDialog(null, "Archivo Descomprimido" , "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+            }
+                
             else
                 System.out.println("");
         }
@@ -321,13 +356,38 @@ public class InterfazArchivos extends javax.swing.JFrame {
         
         if (Desktop.isDesktopSupported()) {
             try {
-                File myFile = new File(this.CampoArchivo.getText());
-                Desktop.getDesktop().open(myFile);
+                if(this.CampoArchivo.getText().contains(".lz77"))
+                {
+                    String campo = this.CampoArchivo.getText();
+                    File myFile = new File(campo.substring(0 ,campo.length() - 4));
+                    Desktop.getDesktop().open(myFile);
+                }
+                else
+                {
+                    File myFile = new File(this.CampoArchivo.getText());
+                    Desktop.getDesktop().open(myFile);
+                }
+                
             } catch (IOException ex) {
                 // no application registered for PDFs
             }
          }
     }//GEN-LAST:event_BotonVerArchivoOActionPerformed
+
+    private void BotonComp2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BotonComp2ActionPerformed
+        // TODO add your handling code here:
+        pasarBinario converBinario = new pasarBinario();
+        try
+        {
+            converBinario.covertir(CampoArchivo.getText());
+            JOptionPane.showMessageDialog(null, "Covercion Completa" , "Mensaje", JOptionPane.INFORMATION_MESSAGE);
+        }
+        catch(Exception io)
+        {
+            System.out.println("---------Algo Salio Mal------");
+            JOptionPane.showMessageDialog(null, "Algo Salio Mal" , "Error", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_BotonComp2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -367,6 +427,7 @@ public class InterfazArchivos extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BotonBuscarArchivo;
     private javax.swing.JButton BotonComp1;
+    private javax.swing.JButton BotonComp2;
     private javax.swing.JButton BotonDesc1;
     private javax.swing.JButton BotonVerArchivoC;
     private javax.swing.JButton BotonVerArchivoO;
